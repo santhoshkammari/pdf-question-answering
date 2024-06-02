@@ -81,7 +81,7 @@ def llm_input(text):
     print('==========')
     return text
 
-CHAT_MODEL= "phi3"
+CHAT_MODEL= "tinyllama"
 EMBED_MODEL = 'nomic-embed-text'
 VECTOR_STORE_PATH: str = "vectorstore_pdf"
 CHUNK_SIZE = 100
@@ -106,7 +106,19 @@ if __name__ == '__main__':
     splits: List[Document] = perform_splits(__data=data)
     vectorstore = load_vectorstore(splits=splits, load_from_disk=True)
     # retriever = vectorstore.as_retriever()
-    template = "Context : {context} \n {user_input}"
+    template = """
+    You are the Document extraction Expert . Your task is to extract the information from the provided context.
+    
+    Context: {context}
+    question: {user_input}
+    
+    to provide the answer, follow these steps:
+    1. Understand the question to perform the extraction
+    2. Identify the parts of the information required
+    3. Extract the required information from the identified parts
+    4. Respond with Answer.
+
+    """
     prompt = PromptTemplate.from_template(
         template=template
     )
