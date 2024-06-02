@@ -81,7 +81,7 @@ def llm_input(text):
     print('==========')
     return text
 
-CHAT_MODEL= "tinyllama"
+CHAT_MODEL= "wizardlm2"
 EMBED_MODEL = 'nomic-embed-text'
 VECTOR_STORE_PATH: str = "vectorstore_pdf"
 CHUNK_SIZE = 100
@@ -107,17 +107,21 @@ if __name__ == '__main__':
     vectorstore = load_vectorstore(splits=splits, load_from_disk=True)
     # retriever = vectorstore.as_retriever()
     template = """
-    You are the Document extraction Expert . Your task is to extract the information from the provided context.
+    You are the question answer expert, your task is to provide answer for the question  from the options using the context
     
     Context: {context}
-    question: {user_input}
     
-    to provide the answer, follow these steps:
-    1. Understand the question to perform the extraction
-    2. Identify the parts of the information required
-    3. Extract the required information from the identified parts
-    4. Respond with Answer.
+    question is of form of question: option1, option2, option3, option4
+    
+    examples:
+    question:newgen services are : good, bad ,nice ,waste
+    answer: good
+    question: newgen is a --- company : big, well known, waster , normal
+    answer: well known
 
+    Now response for following
+    question: {user_input}
+    answer:
     """
     prompt = PromptTemplate.from_template(
         template=template
